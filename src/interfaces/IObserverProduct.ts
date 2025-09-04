@@ -1,3 +1,3 @@
-export interface ObserverProduct {
-     update(name: string, status: "available" | "unavailable" | "under repair"): void
+export interface IObserverProduct {
+     notify(name: string, status: string): void;
 }

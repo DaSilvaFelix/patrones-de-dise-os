@@ -1,48 +1,32 @@
-import { Product } from "../interfaces/IProduct";
-import { ObserverProduct } from "../interfaces/IObserverProduct";
+import { IObserverProduct } from "../interfaces/IObserverProduct";
 
-export class electronicProduct implements ObserverProduct {
-     constructor(
-          public name: string,
-          public tipo: string,
-          public status: "available" | "unavailable" | "under repair",
-          public marker: string,
-          public ram: number,
-          public storage: number,
-          public processor: string
-     ) { }
-
-     update(
-          name: string,
-          status: "available" | "unavailable" | "under repair"
-     ): void {
-          if (this.name === name) {
-               this.status = status;
-               console.log(
-                    `El estado del producto ${this.name} ha sido actualizado a ${this.status}`
-               );
-          }
+export class Support implements IObserverProduct {
+     notify(name: string, status: string): void {
+          console.log(`Support notified: ${name} status changed to ${status}.`);
      }
 }
 
-export class InventoryWithObserver {
+export class Device {
+     private observers: IObserverProduct[] = [];
 
-     private items: electronicProduct[] = [];
+     constructor(
+          private name: string,
+          private type: string,
+          private status: string
+     ) { }
 
-     updateStatus(name: string, status: "available" | "unavailable" | "under repair"): void {
-          const item = this.items.find((item) => item.name === name);
-          if (item) {
-               item.status = status;
-               this.notify(name, status);
-          }
+     addObserver(observer: IObserverProduct): void {
+          this.observers.push(observer);
      }
-     addObserver(product: electronicProduct): void {
-          this.items.push(product);
+
+     changeStatus(newStatus: string): void {
+          this.status = newStatus;
+          this.notifyObservers();
      }
-     private notify(name: string, status: "available" | "unavailable" | "under repair"): void {
-          this.items.forEach((observer) => observer.update(name, status));
-     }
-     getItems(): electronicProduct[] {
-          return this.items;
+
+     private notifyObservers(): void {
+          this.observers.forEach((observer) =>
+               observer.notify(this.name, this.status)
+          );
      }
 }

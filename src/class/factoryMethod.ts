@@ -1,84 +1,61 @@
 import { IItems } from "../interfaces/IItems";
 import { Product } from "../interfaces/IProduct";
-import { GetProduct } from "../interfaces/IcreateItems";
+import { IDevice } from "../interfaces/IDevice";
 
-class consumableProduct implements GetProduct {
+class Notebook implements IDevice {
      constructor(
-          public name: string,
-          public tipo: string,
-          public status: "available" | "unavailable" | "under repair",
-          public marker: string
+          private name: string,
+          private ram: string,
+          private processor: string
      ) { }
 
-     details(): IItems {
-          return {
-               name: this.name,
-               type: this.tipo,
-               status: this.status,
-               marker: this.marker,
-          };
+     getDetails(): string {
+          return `Type: Notebook, Name: ${this.name}, RAM: ${this.ram}, Processor: ${this.processor}`;
      }
 }
 
-class electronicProduct implements GetProduct {
+class Desktop implements IDevice {
      constructor(
-          public name: string,
-          public tipo: string,
-          public status: "available" | "unavailable" | "under repair",
-          public marker: string,
-          public ram: number,
-          public storage: number,
-          public processor: string
+          private name: string,
+          private ram: string,
+          private processor: string
      ) { }
 
-     details(): Product {
-          return {
-               name: this.name,
-               type: this.tipo,
-               status: this.status,
-               marker: this.marker,
-               ram: this.ram,
-               storage: this.storage,
-               processor: this.processor,
-          };
+     getDetails(): string {
+          return `Type: Desktop, Name: ${this.name}, RAM: ${this.ram}, Processor: ${this.processor}`;
      }
 }
 
-export class InventoryWithFactory {
-     items: (IItems | Product)[] = [];
-     public createItem(type: string, name: string,
-          status: "available" | "unavailable" | "under repair",
-          marker: string,
-          ram?: number,
-          storage?: number,
-          processor?: string): GetProduct {
+class Server implements IDevice {
+     constructor(
+          private name: string,
+          private ram: string,
+          private processor: string
+     ) { }
 
-          if (type === "consumable") {
-               return new consumableProduct(
-                    name,
-                    type,
-                    status,
-                    marker
-               );
-          } if (type === "electronic") {
-               return new electronicProduct(
-                    name,
-                    type,
-                    status,
-                    marker,
-                    ram!,
-                    storage!,
-                    processor!
-               );
+     getDetails(): string {
+          return `Type: Server, Name: ${this.name}, RAM: ${this.ram}, Processor: ${this.processor}`;
+     }
+}
+
+
+export class DeviceFactory {
+     createDevice(
+          type: "Notebook" | "Desktop" | "Server",
+          name: string,
+          ram: string,
+          processor: string
+     ): IDevice {
+          switch (type) {
+               case "Notebook":
+                    return new Notebook(name, ram, processor);
+               case "Desktop":
+                    return new Desktop(name, ram, processor);
+               case "Server":
+                    return new Server(name, ram, processor);
+               default:
+                    throw new Error(`Unsupported device type: ${type}`);
           }
-          throw new Error("Invalid type");
-     }
-
-     public addItem(item: IItems | Product): void {
-          this.items.push(item);
-     }
-
-     public getItems(): (IItems | Product)[] {
-          return this.items;
      }
 }
+
