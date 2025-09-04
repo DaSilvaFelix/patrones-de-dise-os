@@ -1,0 +1,15 @@
+{
+  "name": "patrones-de-diseno",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Da Silva Felix",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node ./src/main.ts"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
